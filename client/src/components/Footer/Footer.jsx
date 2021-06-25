@@ -3,7 +3,6 @@ import { Container, Link, makeStyles, Typography } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   footer: {
     backgroundColor: theme.palette.background.paper,
-    // marginTop: theme.spacing(8),
     padding: theme.spacing(2, 0),
   },
 }));
@@ -13,9 +12,6 @@ const Footer = () => {
   return (
     <footer className={classes.footer}>
       <Container maxWidth="lg">
-        {/* <Typography variant="h6" align="center" gutterBottom>
-          Blog
-        </Typography> */}
         <Typography
           variant="subtitle1"
           align="center"
@@ -23,7 +19,7 @@ const Footer = () => {
           component="p"
         >
           {"Copyright © "}
-          <Link color="inherit" href="https://material-ui.com/">
+          <Link color="inherit" href="http://inspiredinspire.blogspot.com/">
             Inspire
           </Link>{" "}
           {new Date().getFullYear()}

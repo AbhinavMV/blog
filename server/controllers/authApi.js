@@ -4,9 +4,13 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
 exports.register = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { fName, lName, email, password } = req.body;
   try {
-    const user = await User.create({ username, email, password });
+    const user = await User.create({
+      email,
+      password,
+      name: `${fName} ${lName}`,
+    });
     sendToken(user, 201, res);
   } catch (error) {
     next(error);
@@ -97,5 +101,5 @@ exports.resetPassword = async (req, res, next) => {
 
 const sendToken = (user, statusCode, res) => {
   const token = user.getSignedToken();
-  return res.status(statusCode).json({ success: true, token });
+  return res.status(statusCode).json({ result: user, token });
 };

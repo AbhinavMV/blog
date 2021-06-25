@@ -5,11 +5,10 @@ const crypto = require("crypto");
 
 const UserSchema = new mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
-      required: [true, "Please provide a username"],
+      required: [true, "Please provide a name"],
     },
-
     email: {
       type: String,
       required: [true, "Please provide an email"],
@@ -20,6 +19,10 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Please provide a password"],
       minlength: [6, "Please provide a password with more than 6 characters"],
       select: false,
+    },
+    post: {
+      type: mongoose.Types.ObjectId,
+      ref: "Post",
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
@@ -45,9 +48,13 @@ UserSchema.methods.matchPassword = async function (password) {
 };
 
 UserSchema.methods.getSignedToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
-  });
+  return jwt.sign(
+    { id: this._id, name: this.name, email: this.email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE,
+    }
+  );
 };
 
 UserSchema.methods.getResetPasswordToken = function () {
@@ -63,10 +70,10 @@ UserSchema.methods.getResetPasswordToken = function () {
 module.exports = mongoose.model("User", UserSchema);
 
 // fname: {
-//     type: String,
-//     required: [true, "Please provide a First Name"],
-//   },
-//   lname: {
-//     type: String,
-//     required: [true, "Please provide a Last Name"],
-//   },
+//   type: String,
+//   required: [true, "Please provide a First Name"],
+// },
+// lname: {
+//   type: String,
+//   required: [true, "Please provide a Last Name"],
+// },

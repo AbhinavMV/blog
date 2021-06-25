@@ -1,3 +1,4 @@
+import { useHistory } from "react-router-dom";
 import {
   Card,
   CardActionArea,
@@ -10,13 +11,22 @@ import { useStyles } from "./styles";
 
 const CardComponent = ({ data }) => {
   const classes = useStyles();
+  const history = useHistory();
+  const handleClick = (e) => {
+    e.preventDefault();
+    history.push(`/post/${data._id}`);
+  };
+
   return (
-    <CardActionArea>
+    <CardActionArea
+      onClick={handleClick}
+      style={{ height: "100%", display: "flex" }}
+    >
       <Card className={classes.root}>
         <Hidden xsDown>
           <CardMedia
             className={classes.cover}
-            image={data.imgUrl}
+            image={`${data.selectedFile}/480x250`}
             tilte={data.title}
           />
         </Hidden>
@@ -33,7 +43,7 @@ const CardComponent = ({ data }) => {
               component="p"
               className={classes.description}
             >
-              {data.body}
+              {data.message}
             </Typography>
           </CardContent>
         </div>

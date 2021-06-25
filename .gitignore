@@ -2,10 +2,12 @@
 
 # dependencies
 /node_modules
+build/
 node_modules
 /.pnp
 .pnp.js
-
+/client/src/images
+/posts.json
 # testing
 /coverage
 
@@ -13,6 +15,7 @@ node_modules
 /build
 
 # misc
+
 .env
 .DS_Store
 .env.local

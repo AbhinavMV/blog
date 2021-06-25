@@ -1,18 +1,42 @@
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+import { Link, useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  AppBar,
+  Avatar,
+  Toolbar,
+  Typography,
+  IconButton,
+} from "@material-ui/core";
+import decode from "jwt-decode";
 import CreateIcon from "@material-ui/icons/Create";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import { useStyles } from "./styles";
-import { Link } from "react-router-dom";
 
-export default function MenuAppBar() {
+export default function Navbar({ isSignUp }) {
   const classes = useStyles();
-  const user = false;
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    const token = user?.token;
+    if (token) {
+      const decodedToken = decode(token);
+      if (decodedToken.exp * 1000 < new Date().getTime()) handleLogout();
+    }
+    setUser(JSON.parse(localStorage.getItem("profile")));
+    // eslint-disable-next-line
+  }, []);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    dispatch({ type: "LOGOUT" });
+    setUser(false);
+    history.push("/");
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
@@ -39,10 +63,9 @@ export default function MenuAppBar() {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 color="inherit"
+                onClick={handleLogout}
               >
-                <Link to="/login" className={classes.Link}>
-                  <ExitToAppIcon />
-                </Link>
+                <ExitToAppIcon />
               </IconButton>
               <IconButton
                 aria-label="account of current user"
@@ -51,18 +74,18 @@ export default function MenuAppBar() {
                 color="inherit"
               >
                 <Link to="/profile" className={classes.Link}>
-                  <AccountCircle />
+                  <Avatar alt={user.result.name} src={user?.result.imageUrl}>
+                    {user?.result.name.charAt(0)}
+                  </Avatar>
                 </Link>
               </IconButton>
             </div>
           ) : (
-            window.location.pathname !== "/login" && (
-              <Typography variant="h6" component="h6">
-                <Link to="login" className={classes.Link}>
-                  Login
-                </Link>
-              </Typography>
-            )
+            <Typography variant="h6" component="h6">
+              <Link to="/auth" className={classes.Link}>
+                Login
+              </Link>
+            </Typography>
           )}
         </Toolbar>
       </AppBar>

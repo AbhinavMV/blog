@@ -14,8 +14,8 @@ export const useStyles = makeStyles((theme) => ({
   centered: {
     position: "absolute",
     alignSelf: "center",
-    top: -20,
     width: "100%",
+    top: 40,
     marginLeft: "auto",
     fontSize: "10rem",
   },
@@ -24,5 +24,15 @@ export const useStyles = makeStyles((theme) => ({
     height: "20rem",
     objectFit: "cover",
     marginBottom: 20,
+  },
+  progress: {
+    display: "flex",
+    justifyContent: "center",
+    height: "100%",
+    alignItems: "flex-start",
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
   },
 }));

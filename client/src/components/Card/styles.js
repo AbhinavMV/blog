@@ -3,9 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 export const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    flexGrow:1,
     maxWidth: 400,
     flexDirection: "column",
-    justifyContent: "center",
+    height: "100%",
+    maxHeight: "30em",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   details: {
     display: "flex",
