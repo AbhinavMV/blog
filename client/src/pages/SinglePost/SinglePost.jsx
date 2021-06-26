@@ -108,7 +108,10 @@ const SinglePost = ({ location, history }) => {
                           (tag) => tag !== "" && `#${tag} `
                         )}
                       </Typography>
-                      <LikeComment id={currentPost._id} />
+                      <LikeComment
+                        id={currentPost._id}
+                        likes={currentPost.likes}
+                      />
                     </Grid>
                   )
                 )}

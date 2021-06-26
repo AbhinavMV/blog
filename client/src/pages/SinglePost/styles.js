@@ -3,6 +3,7 @@ export default makeStyles((theme) => ({
   main: {
     flexGrow: 1,
     marginTop: 20,
+    marginBottom: 20,
   },
   mainImage: {
     width: "100%",

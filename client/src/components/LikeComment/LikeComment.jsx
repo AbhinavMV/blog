@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Avatar,
   Button,
@@ -12,11 +13,11 @@ import {
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import CommentIcon from "@material-ui/icons/Comment";
+import FaceIcon from "@material-ui/icons/Face";
 import { red } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core";
 import Comment from "./Comment";
-import axios from "axios";
-
+import { likePost, getComments, postComment } from "../../api/postApi";
 const useStyles = makeStyles((theme) => ({
   mainArea: {
     display: "flex",
@@ -38,44 +39,52 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LikeComment = ({ id }) => {
-  const [userLike, setUserLike] = useState(true);
+  const likes = useSelector((state) => state.posts.currentPost.likes);
+  const [likesCount, setLikesCount] = useState(undefined);
   const [user] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [userLike, setUserLike] = useState();
+  useEffect(() => {
+    setUserLike(
+      user?.result._id || user?.result.googleId
+        ? likes?.find(
+            (id) => id === (user.result?._id || user.result?.googleId)
+          )
+          ? true
+          : false
+        : false
+    );
+    if (likesCount === undefined) setLikesCount(likes?.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [likes]);
   const [showComment, setShowComment] = useState(false);
   const [allComments, setAllComments] = useState([]);
   const [message, setMessage] = useState("");
   const classes = useStyles();
 
-  const getComments = async () => {
+  const handleLike = async () => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:8000/api/comment/${id}`
-      );
+      const { data } = await likePost(user, id);
+      setLikesCount(data.likesCount);
+      setUserLike(!userLike);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleComments = async () => {
+    try {
+      const { data } = await getComments(id);
       setAllComments(data.comments);
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:8000/api/comment/${id}`, {
-        message,
-        commentor: user
-          ? JSON.stringify({
-              username: user.result.name,
-              avatar: user.result.url ? null : user.result.imageUrl,
-              userId: user.result._id ? user.result.id : user.result.googleId,
-            })
-          : JSON.stringify({
-              username: "Anonymous",
-              avatar: `https://source.unsplash.com/random/100x100?model?sig=${Math.round(
-                Math.random() * 1000
-              )}`,
-              userId: "Anonymous",
-            }),
-      });
-      getComments();
+      await postComment(user, id, message);
+      handleComments();
       setMessage("");
     } catch (error) {
       console.log(error);
@@ -87,18 +96,23 @@ const LikeComment = ({ id }) => {
       <Paper className={classes.mainArea} elevation={0}>
         <Divider />
         <div>
-          <IconButton aria-label="like" onClick={() => setUserLike(!userLike)}>
+          <IconButton
+            aria-label="like"
+            onClick={handleLike}
+            disabled={user ? false : true}
+          >
             {userLike ? (
               <FavoriteIcon style={{ color: red[500] }} />
             ) : (
               <FavoriteBorderIcon />
-            )}
+            )}{" "}
+            <Typography variant="subtitle1">{likesCount}</Typography>
           </IconButton>
           <IconButton
             aria-label="comment"
             onClick={() => {
               setShowComment(!showComment);
-              getComments();
+              handleComments();
             }}
           >
             <CommentIcon />
@@ -116,10 +130,9 @@ const LikeComment = ({ id }) => {
                 className={classes.commentsPost}
               >
                 <Grid item xs={2} sm={1}>
-                  <Avatar
-                    alt="Chinky"
-                    src="https://source.unsplash.com/random?model"
-                  />
+                  <Avatar alt="A" src={user?.result.imageUrl}>
+                    {user?.result.name.charAt(0).toUpperCase() || <FaceIcon />}
+                  </Avatar>
                 </Grid>
                 <Grid item xs={10} sm={11}>
                   <TextField
@@ -131,13 +144,15 @@ const LikeComment = ({ id }) => {
                   />
                 </Grid>
                 <span className={classes.formButton}>
-                  <Typography
-                    variant="body2"
-                    component="p"
-                    style={{ marginRight: 5 }}
-                  >
-                    Post as Anonymous
-                  </Typography>
+                  {!user && (
+                    <Typography
+                      variant="body2"
+                      component="p"
+                      style={{ marginRight: 5 }}
+                    >
+                      Post as Anonymous
+                    </Typography>
+                  )}
                   <Button type="submit" color="primary" variant="contained">
                     Post
                   </Button>

@@ -20,13 +20,13 @@ const PostSchema = mongoose.Schema({
     type: String,
     default: `https://source.unsplash.com/random?`,
   },
-  likeCount: {
+  likes: {
     type: [String],
     default: [],
   },
   createdAt: {
     type: Date,
-    default: new Date(),
+    default: new Date().toISOString(),
   },
   comments: {
     type: [mongoose.Schema.Types.ObjectId],

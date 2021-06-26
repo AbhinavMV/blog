@@ -5,7 +5,7 @@ import {
   // makeStyles,
   Typography,
 } from "@material-ui/core";
-import React from "react";
+import FaceIcon from "@material-ui/icons/Face";
 
 // const useStyles = makeStyles((theme) => ({
 //   main: {
@@ -22,12 +22,15 @@ const Comment = ({ comment }) => {
         <Grid item xs={2} sm={1}>
           {/* <Divider /> */}
           <Avatar src={comment.commentor.avatar}>
-            {comment.commentor.username?.charAt(0).toUpperCase() || "A"}
+            {comment.commentor.username?.charAt(0).toUpperCase() || (
+              <FaceIcon />
+            )}
           </Avatar>
         </Grid>
         <Grid item xs={8} sm={9}>
           <Typography variant="body1" component="p">
-            {`${comment.commentor.username}: ${comment.body}`}
+            <b>{comment.commentor.username}</b>
+            {": " + comment.body}
           </Typography>
           {/* <Divider /> */}
         </Grid>

@@ -1,7 +1,8 @@
 import axios from "axios";
 
-// const API = axios.create({ baseURL: "https://poem-blog-app.herokuapp.com/" });
-const API = axios.create({ baseURL: "http://localhost:8000/" });
+const API = axios.create({ baseURL: "https://poem-blog-app.herokuapp.com/" });
+
+// const API = axios.create({ baseURL: "http://localhost:8000/" });
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
@@ -28,5 +29,32 @@ export const updatePost = (formData) => {
 export const deletePost = (id) => {
   return API.delete(`/api/posts/deletepost`, {
     data: { id },
+  });
+};
+
+export const likePost = (user, id) => {
+  return API.patch(`/api/posts/${id}/likepost`, {
+    id: user.result?._id || user.result?.googleId,
+  });
+};
+
+export const getComments = (id) => {
+  return API.get(`/api/comment/${id}`);
+};
+
+export const postComment = (user, id, message) => {
+  return API.post(`/api/comment/${id}`, {
+    message,
+    commentor: user
+      ? JSON.stringify({
+          username: user.result.name,
+          avatar: user.result.url ? null : user.result.imageUrl,
+          userId: user.result._id ? user.result.id : user.result.googleId,
+        })
+      : JSON.stringify({
+          username: "Anonymous",
+          avatar: null,
+          userId: "Anonymous",
+        }),
   });
 };

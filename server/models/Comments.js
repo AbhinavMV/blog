@@ -9,7 +9,7 @@ const CommentsSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: new Date(),
+    default: new Date().toISOString(),
   },
   post: {
     type: mongoose.Schema.Types.ObjectId,

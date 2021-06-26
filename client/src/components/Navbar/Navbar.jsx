@@ -24,17 +24,23 @@ export default function Navbar({ isSignUp }) {
     const token = user?.token;
     if (token) {
       const decodedToken = decode(token);
-      if (decodedToken.exp * 1000 < new Date().getTime()) handleLogout();
+      if (decodedToken.exp * 1000 < new Date().getTime()) {
+        logout();
+      }
     }
     setUser(JSON.parse(localStorage.getItem("profile")));
     // eslint-disable-next-line
   }, []);
 
-  const handleLogout = (e) => {
-    e.preventDefault();
+  const logout = () => {
     dispatch({ type: "LOGOUT" });
     setUser(false);
     history.push("/");
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
   };
 
   return (

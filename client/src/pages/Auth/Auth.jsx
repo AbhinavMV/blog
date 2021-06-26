@@ -8,6 +8,7 @@ import {
   Box,
   Typography,
   Container,
+  CircularProgress,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Alert from "@material-ui/lab/Alert";
@@ -32,7 +33,7 @@ export default function Auth({ history }) {
   const classes = useStyles();
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState(initialState);
-  const { error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,10 +55,10 @@ export default function Auth({ history }) {
     const token = res?.tokenId;
 
     try {
-      dispatch({ type: "AUTH", data: { result, token } });
+      dispatch({ type: "AUTH_SUCCESS", data: { result, token } });
       history.push("/");
     } catch (error) {
-      dispatch({ type: "ERROR", error });
+      dispatch({ type: "AUTH_ERROR", error });
       setTimeout(() => dispatch({ type: "LOGOUT" }), 5000);
     }
   };
@@ -79,7 +80,18 @@ export default function Auth({ history }) {
             {isSignUp ? "Sign Up" : "Sign In"}
           </Typography>
           <form onSubmit={handleSubmit} className={classes.form} noValidate>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justify="center">
+              {loading && (
+                <CircularProgress
+                  color="secondary"
+                  style={{
+                    display: "flex",
+                    order: "1",
+                    position: "absolute",
+                    zIndex: 999,
+                  }}
+                />
+              )}
               {isSignUp && (
                 <>
                   <Input
@@ -122,7 +134,7 @@ export default function Auth({ history }) {
             </Grid>
             {error && (
               <Alert severity="error" style={{ marginTop: 10 }}>
-                {error}
+                {error.response.data.error}
               </Alert>
             )}
             <Button

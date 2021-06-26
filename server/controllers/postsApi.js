@@ -1,5 +1,5 @@
 const Posts = require("../models/Posts");
-
+const Comments = require("../models/Comments");
 exports.getPosts = async (req, res, next) => {
   try {
     let lim = parseInt(req.query.limit) || 5;
@@ -85,6 +85,37 @@ exports.updatePost = async (req, res, next) => {
         .json({ success: true, message: "Successfully updated" });
     }
   } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+exports.likePost = async (req, res, next) => {
+  const userId = req.body.id;
+
+  try {
+    let p = "";
+    const post = await Posts.findById(req.params.post);
+    if (!post.likes.find((id) => id === userId)) {
+      p = await Posts.findByIdAndUpdate(
+        req.params.post,
+        {
+          $push: { likes: userId },
+        },
+        { new: true }
+      );
+    } else {
+      p = await Posts.findByIdAndUpdate(
+        req.params.post,
+        {
+          $pull: { likes: userId },
+        },
+        { new: true }
+      );
+    }
+    const likesCount = p.likes.length;
+    return res.status(200).json({ success: true, likesCount });
+  } catch (error) {
     next(error);
   }
 };
@@ -93,6 +124,7 @@ exports.deletePost = async (req, res, next) => {
   const { id } = req.body;
   try {
     await Posts.findByIdAndDelete(id);
+    await Comments.deleteMany({ post: id });
     return res
       .status(200)
       .json({ success: true, message: "Successfully Deleted" });

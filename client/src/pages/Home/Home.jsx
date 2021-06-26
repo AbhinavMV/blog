@@ -16,7 +16,9 @@ import { useStyles } from "./styles";
 
 const Home = ({ history }) => {
   const classes = useStyles();
-  const { loading, posts, pagination } = useSelector((state) => state.posts);
+  const { loading, posts, pagination, error } = useSelector(
+    (state) => state.posts
+  );
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
 
@@ -26,6 +28,7 @@ const Home = ({ history }) => {
   }, [page]);
   const handleChange = (e, value) => {
     setPage(value);
+    window.scroll(0, 0);
   };
   return (
     <>
@@ -43,6 +46,7 @@ const Home = ({ history }) => {
 
       <Container maxWidth="lg" className={classes.mainGrid}>
         <Grid container spacing={4} justify="center">
+          {error && <Typography variant="h4">Some Error Occured</Typography>}
           <Grid
             container
             item
