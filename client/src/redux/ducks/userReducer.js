@@ -39,6 +39,7 @@ const authReducer = (state = initialState, action) => {
       return { ...state, authData: null, loading: false, error: null };
     case AUTH_ERROR:
       return { ...state, authData: null, loading: false, error: action.error };
+
     default:
       return state;
   }

@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Posts = require("../models/Posts");
+const Comments = require("../models/Comments");
 const ErrorResponse = require("../utils/ErrorResponse");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
@@ -21,9 +23,7 @@ exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(
-      new ErrorResponse("Please provide a valid email or password", 400)
-    );
+    return next(new ErrorResponse("Please provide a valid email or password", 400));
   }
 
   try {
@@ -95,6 +95,48 @@ exports.resetPassword = async (req, res, next) => {
       data: "Password Reset Success",
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  const { fname, lname, email, imageUrl, password } = req.body;
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    user.name = `${fname} ${lname}`;
+    user.email = email;
+    user.imageUrl = imageUrl;
+    if (password) {
+      user.password = password;
+    }
+    const newUser = await user.save();
+    await Posts.updateMany({ creatorId: req.params.id }, { $set: { author: newUser.name } });
+    const commentor = {
+      userId: req.params.id,
+      username: newUser.name,
+      avatar: newUser.imageUrl,
+    };
+    await Comments.updateMany(
+      { commentor: { userId: req.params.id } },
+      { $set: { commentor: commentor } }
+    );
+    sendToken(newUser, 200, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const { posts } = await User.findByIdAndDelete(id);
+    posts.map(async (postId) => {
+      const { comments } = await Posts.findByIdAndDelete(postId);
+      comments.map(async (commentId) => await Comments.findByIdAndDelete(commentId));
+    });
+    return res.status(200).json({ success: true, message: "User Deleted Successfully" });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };

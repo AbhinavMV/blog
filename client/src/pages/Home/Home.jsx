@@ -46,7 +46,11 @@ const Home = ({ history }) => {
 
       <Container maxWidth="lg" className={classes.mainGrid}>
         <Grid container spacing={4} justify="center">
-          {error && <Typography variant="h4">Some Error Occured</Typography>}
+          {error && (
+            <Grid item xs={12} md={8}>
+              <Typography variant="h4">Some Error Occured</Typography>
+            </Grid>
+          )}
           <Grid
             container
             item

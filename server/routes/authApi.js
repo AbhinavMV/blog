@@ -4,7 +4,10 @@ const {
   login,
   forgotPassword,
   resetPassword,
+  updateUser,
+  deleteUser,
 } = require("../controllers/authApi");
+const { auth } = require("../middleware/postsAuth");
 
 const router = express.Router();
 
@@ -16,4 +19,6 @@ router.post("/forgotpassword", forgotPassword);
 
 router.put("/resetpassword/:resetToken", resetPassword);
 
+router.patch("/update/:id", auth, updateUser);
+router.delete("/deleteuser/:id", auth, deleteUser);
 module.exports = router;

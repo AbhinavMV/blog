@@ -62,7 +62,11 @@ const Form = ({ initialState, edit, setEdit, history }) => {
       <Grid item xs>
         <img
           className={classes.mainImage}
-          src={"https://source.unsplash.com/weekly?nature"}
+          src={
+            formData.selectedFile
+              ? formData.selectedFile
+              : "https://source.unsplash.com/weekly?nature"
+          }
           alt="Post1"
         />
       </Grid>

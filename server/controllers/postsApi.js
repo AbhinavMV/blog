@@ -1,5 +1,6 @@
 const Posts = require("../models/Posts");
 const Comments = require("../models/Comments");
+const User = require("../models/User");
 exports.getPosts = async (req, res, next) => {
   try {
     let lim = parseInt(req.query.limit) || 5;
@@ -51,7 +52,6 @@ exports.getPosts = async (req, res, next) => {
 exports.addPost = async (req, res, next) => {
   const { title, message, tags, selectedFile } = req.body;
   let allTags = "";
-  console.log(tags);
   if (tags) {
     allTags = tags.split(",");
   }
@@ -67,9 +67,8 @@ exports.addPost = async (req, res, next) => {
       creatorId: id,
       author: req.user.name,
     });
-    return res
-      .status(200)
-      .json({ success: "true", message: "Successfully Posted" });
+    await User.findByIdAndUpdate(req.user.id, { $push: { posts: post._id } });
+    return res.status(200).json({ success: "true", message: "Successfully Posted" });
   } catch (error) {
     next(error);
   }
@@ -80,9 +79,7 @@ exports.updatePost = async (req, res, next) => {
   try {
     if (!req.body.comment) {
       await Posts.findByIdAndUpdate(_id, req.body);
-      return res
-        .status(200)
-        .json({ success: true, message: "Successfully updated" });
+      return res.status(200).json({ success: true, message: "Successfully updated" });
     }
   } catch (error) {
     console.log(error);
@@ -125,9 +122,7 @@ exports.deletePost = async (req, res, next) => {
   try {
     await Posts.findByIdAndDelete(id);
     await Comments.deleteMany({ post: id });
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully Deleted" });
+    return res.status(200).json({ success: true, message: "Successfully Deleted" });
   } catch (error) {
     next(error);
   }

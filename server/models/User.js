@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 const brcypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const Posts = require("./Posts");
 
 const UserSchema = new mongoose.Schema(
   {
+    imageUrl: String,
     name: {
       type: String,
       required: [true, "Please provide a name"],
@@ -20,8 +22,8 @@ const UserSchema = new mongoose.Schema(
       minlength: [6, "Please provide a password with more than 6 characters"],
       select: false,
     },
-    post: {
-      type: mongoose.Types.ObjectId,
+    posts: {
+      type: [mongoose.Types.ObjectId],
       ref: "Post",
     },
     resetPasswordToken: String,
@@ -48,21 +50,14 @@ UserSchema.methods.matchPassword = async function (password) {
 };
 
 UserSchema.methods.getSignedToken = function () {
-  return jwt.sign(
-    { id: this._id, name: this.name, email: this.email },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXPIRE,
-    }
-  );
+  return jwt.sign({ id: this._id, name: this.name, email: this.email }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
 };
 
 UserSchema.methods.getResetPasswordToken = function () {
   const resetToken = crypto.randomBytes(20).toString("hex");
-  this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+  this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
   this.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
   return resetToken;
 };
