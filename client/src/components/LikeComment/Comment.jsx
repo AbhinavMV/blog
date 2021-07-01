@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import FaceIcon from "@material-ui/icons/Face";
-
+import PropTypes from "prop-types";
 // const useStyles = makeStyles((theme) => ({
 //   main: {
 //     display: "flex",
@@ -22,9 +22,7 @@ const Comment = ({ comment }) => {
         <Grid item xs={2} sm={1}>
           {/* <Divider /> */}
           <Avatar src={comment.commentor.avatar}>
-            {comment.commentor.username?.charAt(0).toUpperCase() || (
-              <FaceIcon />
-            )}
+            {comment.commentor.username?.charAt(0).toUpperCase() || <FaceIcon />}
           </Avatar>
         </Grid>
         <Grid item xs={8} sm={9}>
@@ -43,6 +41,18 @@ const Comment = ({ comment }) => {
       </Grid>
     </>
   );
+};
+
+Comment.propTypes = {
+  comment: PropTypes.shape({
+    body: PropTypes.string,
+    createdAt: PropTypes.string,
+    commentor: PropTypes.shape({
+      username: PropTypes.string,
+      avatar: PropTypes.string,
+      userId: PropTypes.string,
+    }),
+  }),
 };
 
 export default Comment;

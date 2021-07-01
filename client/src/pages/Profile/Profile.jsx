@@ -25,7 +25,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 10,
   },
   googleAccount: {
+    marginTop: "2rem",
     display: "flex",
+    justify: "center",
     flexDirection: "column",
     alignItems: "center",
   },
@@ -62,6 +64,7 @@ const Profile = ({ history }) => {
       await deleteUser(user[0].result._id);
       localStorage.clear();
       history.push("/");
+      dispatch({ type: "LOGOUT" });
     } catch (error) {
       console.log(error.response.data);
       setMessage({ success: undefined, error: error.response?.data.message });
@@ -76,7 +79,6 @@ const Profile = ({ history }) => {
       )}/100x100`;
     try {
       const { data } = await updateUser(user[0].result._id, profileData);
-      console.log(data);
       dispatch({ type: "AUTH_SUCCESS", data });
       setMessage({ success: "Profile Updated", error: undefined });
     } catch (error) {

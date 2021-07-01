@@ -37,8 +37,7 @@ export default function Auth({ history }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (localStorage.getItem("authToken") || localStorage.getItem("profile"))
-      history.push("/");
+    if (localStorage.getItem("authToken") || localStorage.getItem("profile")) history.push("/");
   }, [history]);
 
   const handleSubmit = (e) => {
@@ -110,12 +109,7 @@ export default function Auth({ history }) {
                   />
                 </>
               )}
-              <Input
-                name="email"
-                label="Email"
-                type="text"
-                handleChange={handleChange}
-              />
+              <Input name="email" label="Email" type="text" handleChange={handleChange} />
               <Input
                 name="password"
                 label="Password"
@@ -167,19 +161,14 @@ export default function Auth({ history }) {
             <Grid container justify="flex-end">
               {!isSignUp && (
                 <Grid item xs={12}>
-                  <Button
-                    size="small"
-                    onClick={() => history.push("/forgotpassword")}
-                  >
+                  <Button size="small" onClick={() => history.push("/forgotpassword")}>
                     Forgot Password
                   </Button>
                 </Grid>
               )}
               <Grid item xs={12}>
                 <Button size="small" onClick={() => setIsSignUp(!isSignUp)}>
-                  {isSignUp
-                    ? "Already have an account? Sign in"
-                    : "Don't have an account? Sign Up"}
+                  {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign Up"}
                 </Button>
               </Grid>
             </Grid>

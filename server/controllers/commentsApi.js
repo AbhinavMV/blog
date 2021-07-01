@@ -27,10 +27,7 @@ exports.addComment = async (req, res, next) => {
     // console.log(post);
     if (!post) return next(new ErrorResponse("Invalid request", 404));
     const comment = await commentData.save();
-    await Posts.findByIdAndUpdate(
-      { _id: postId },
-      { $push: { comments: comment._id } }
-    );
+    await Posts.findByIdAndUpdate({ _id: postId }, { $push: { comments: comment._id } });
     return res.status(200).json({ comment, message: "Successfully Posted" });
   } catch (error) {
     console.log(error);

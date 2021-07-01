@@ -3,7 +3,7 @@ import { Alert } from "@material-ui/lab";
 import AddAPhotoOutlinedIcon from "@material-ui/icons/AddAPhotoOutlined";
 import { useEffect, useState } from "react";
 import FileBase from "react-file-input-previews-base64";
-
+import PropTypes from "prop-types";
 import { useStyles } from "./styles";
 import { addPosts, updatePost } from "../../api/postApi";
 // import { useHistory } from "react-router-dom";
@@ -24,8 +24,7 @@ const Form = ({ initialState, edit, setEdit, history }) => {
   }, []);
 
   const handleChange = (e) => {
-    if (e.target.type !== "file")
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.type !== "file") setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -71,11 +70,7 @@ const Form = ({ initialState, edit, setEdit, history }) => {
         />
       </Grid>
       <Grid item xs>
-        <form
-          onSubmit={edit ? handleUpdate : handleSubmit}
-          noValidate
-          autoComplete="off"
-        >
+        <form onSubmit={edit ? handleUpdate : handleSubmit} noValidate autoComplete="off">
           <div className={classes.form}>
             <div className={classes.heading}>
               <div className={classes.file}>
@@ -137,6 +132,16 @@ const Form = ({ initialState, edit, setEdit, history }) => {
       </Grid>
     </Grid>
   );
+};
+
+Form.propTypes = {
+  initialState: PropTypes.shape({
+    title: PropTypes.string,
+    message: PropTypes.string,
+    tags: PropTypes.string,
+    createdAt: PropTypes.string,
+  }),
+  edit: PropTypes.bool,
 };
 
 export default Form;

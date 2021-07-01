@@ -6,9 +6,7 @@ const API = axios.create({ baseURL: "http://localhost:8000/" });
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
-    req.headers.Authorization = `Bearer ${
-      JSON.parse(localStorage.getItem("profile")).token
-    }`;
+    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")).token}`;
   }
   return req;
 });
@@ -48,8 +46,8 @@ export const postComment = (user, id, message) => {
     commentor: user
       ? JSON.stringify({
           username: user.result.name,
-          avatar: user.result.url ? null : user.result.imageUrl,
-          userId: user.result._id ? user.result.id : user.result.googleId,
+          avatar: user.result.imageUrl ? undefined : user.result.imageUrl,
+          userId: user.result._id ? user.result._id : user.result.googleId,
         })
       : JSON.stringify({
           username: "Anonymous",

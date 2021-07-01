@@ -41,14 +41,12 @@ const useStyles = makeStyles((theme) => ({
 const LikeComment = ({ id }) => {
   const likes = useSelector((state) => state.posts.currentPost.likes);
   const [likesCount, setLikesCount] = useState(undefined);
-  const [user] = useState(JSON.parse(localStorage.getItem("profile")));
+  const user = JSON.parse(localStorage.getItem("profile"));
   const [userLike, setUserLike] = useState();
   useEffect(() => {
     setUserLike(
       user?.result._id || user?.result.googleId
-        ? likes?.find(
-            (id) => id === (user.result?._id || user.result?.googleId)
-          )
+        ? likes?.find((id) => id === (user.result?._id || user.result?.googleId))
           ? true
           : false
         : false
@@ -96,16 +94,8 @@ const LikeComment = ({ id }) => {
       <Paper className={classes.mainArea} elevation={0}>
         <Divider />
         <div>
-          <IconButton
-            aria-label="like"
-            onClick={handleLike}
-            disabled={user ? false : true}
-          >
-            {userLike ? (
-              <FavoriteIcon style={{ color: red[500] }} />
-            ) : (
-              <FavoriteBorderIcon />
-            )}{" "}
+          <IconButton aria-label="like" onClick={handleLike} disabled={user ? false : true}>
+            {userLike ? <FavoriteIcon style={{ color: red[500] }} /> : <FavoriteBorderIcon />}{" "}
             <Typography variant="subtitle1">{likesCount}</Typography>
           </IconButton>
           <IconButton
@@ -122,13 +112,7 @@ const LikeComment = ({ id }) => {
         {showComment && (
           <>
             <form onSubmit={handleSubmit}>
-              <Grid
-                container
-                item
-                xs={12}
-                spacing={1}
-                className={classes.commentsPost}
-              >
+              <Grid container item xs={12} spacing={1} className={classes.commentsPost}>
                 <Grid item xs={2} sm={1}>
                   <Avatar alt="A" src={user?.result.imageUrl}>
                     {user?.result.name.charAt(0).toUpperCase() || <FaceIcon />}
@@ -145,11 +129,7 @@ const LikeComment = ({ id }) => {
                 </Grid>
                 <span className={classes.formButton}>
                   {!user && (
-                    <Typography
-                      variant="body2"
-                      component="p"
-                      style={{ marginRight: 5 }}
-                    >
+                    <Typography variant="body2" component="p" style={{ marginRight: 5 }}>
                       Post as Anonymous
                     </Typography>
                   )}

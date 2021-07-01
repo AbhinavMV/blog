@@ -46,7 +46,7 @@ const Sidebar = () => {
         </Typography>
         <img
           src={
-            authData?.email === "muskan@gmail.com"
+            authData?.result.email === "muskan@gmail.com"
               ? MainPhoto
               : "https://source.unsplash.com/random?model"
           }

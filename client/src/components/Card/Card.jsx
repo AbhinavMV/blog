@@ -7,6 +7,7 @@ import {
   Hidden,
   Typography,
 } from "@material-ui/core";
+import PropTypes from "prop-types";
 import { useStyles } from "./styles";
 
 const CardComponent = ({ data }) => {
@@ -18,10 +19,7 @@ const CardComponent = ({ data }) => {
   };
 
   return (
-    <CardActionArea
-      onClick={handleClick}
-      style={{ height: "100%", display: "flex" }}
-    >
+    <CardActionArea onClick={handleClick} style={{ height: "100%", display: "flex" }}>
       <Card className={classes.root}>
         <Hidden xsDown>
           <CardMedia
@@ -38,11 +36,7 @@ const CardComponent = ({ data }) => {
             <Typography variant="subtitle1" color="textSecondary">
               {data.author}
             </Typography>
-            <Typography
-              variant="body2"
-              component="p"
-              className={classes.description}
-            >
+            <Typography variant="body2" component="p" className={classes.description}>
               {data.message}
             </Typography>
           </CardContent>
@@ -50,6 +44,16 @@ const CardComponent = ({ data }) => {
       </Card>
     </CardActionArea>
   );
+};
+
+CardComponent.propTypes = {
+  data: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string,
+    message: PropTypes.string,
+    author: PropTypes.string,
+    selectedFile: PropTypes.string,
+  }),
 };
 
 export default CardComponent;

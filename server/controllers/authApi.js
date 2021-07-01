@@ -134,6 +134,9 @@ exports.deleteUser = async (req, res, next) => {
       const { comments } = await Posts.findByIdAndDelete(postId);
       comments.map(async (commentId) => await Comments.findByIdAndDelete(commentId));
     });
+
+    await Comments.deleteMany({ "commentor.userId": id });
+
     return res.status(200).json({ success: true, message: "User Deleted Successfully" });
   } catch (error) {
     console.log(error);
